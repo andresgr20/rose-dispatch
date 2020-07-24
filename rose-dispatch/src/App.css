@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+.barButtons{
+  list-style: none;
+
+}
+.barButtons li{
+  display:inline-block;
+  padding: 0px 20px;
+}
+
+.barButtons  li a{
+  transition: all 0.3s ease 0s;
+}
+
+.barButtons li a:hover{
+  transition: all 0.3s ease 0s;
+  color: #0088a9;
+}
+
+.navBar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
