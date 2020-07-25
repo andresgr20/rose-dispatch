@@ -47,19 +47,7 @@ function App() {
       <button>Download</button> 
       {/* // pop up to select range turn the current calendar into csv  */}
 
-      {/* // Calendar will be here  */}
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
+      <div id="calendar" style="height: 800px;"></div>
     </div>
   );
 }
