@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
@@ -13,7 +13,7 @@ import 'tui-time-picker/dist/tui-time-picker.css';
 
 function App() {
 
-  var Calendar = require('tui-calendar'); /* CommonJS */
+var Calendar = require('tui-calendar'); /* CommonJS */
 require("tui-calendar/dist/tui-calendar.css");
 
 // If you use the default popups, use this.
@@ -29,6 +29,8 @@ var calendar = new Calendar('#calendar', {
     }
   }
 });
+
+calendar.changeView('week',true);
 
   return (
     <div className="App">
@@ -71,7 +73,7 @@ var calendar = new Calendar('#calendar', {
       <button>Download</button> 
       {/* // pop up to select range turn the current calendar into csv  */}
 
-      <div id="calendar" style="height: 800px;"></div>
+      <div id="calendar"></div>
     </div>
   );
 }
