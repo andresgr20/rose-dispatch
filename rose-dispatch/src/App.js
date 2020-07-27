@@ -1,5 +1,5 @@
-import React from 'react';
-import logo from './logo.png';
+import React, { useState, useEffect } from 'react';
+import logo from './logo-grey.png';
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
