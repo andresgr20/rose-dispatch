@@ -4,6 +4,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
 import './App.css';
+import Tasks from './Tasks.js';
+import driversData from './drivers-data.json';
 import Calendar from 'tui-calendar'; /* ES6 */
 import "tui-calendar/dist/tui-calendar.css";
 
@@ -52,7 +54,8 @@ calendar.changeView('week',true);
               </Dropdown>
             </li>
             <li>
-          <Button> Add task</Button>  
+            <Tasks></Tasks>
+
           {/* // Create a new task for  a user, if there is a conflict with a task it will recommned another driver or another time for the same driver 
           // A task should have Driver, Type, time duration, Description, Location,nationality
           // after adding sends and invite to the person in the email

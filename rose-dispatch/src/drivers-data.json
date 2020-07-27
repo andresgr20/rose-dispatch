@@ -1,0 +1,23 @@
+[
+    {
+        "id": "0",
+        "name": "Joe",
+        "nationality": "Mexican",
+        "phone":"2267509517",
+        "email":"joetest@gmail.com"
+    },
+    {
+        "id": "1",
+        "name": "Grace",
+        "nationality": "Canadian",
+        "phone":"2267509517",
+        "email":"andresgr2094@gmail.com"
+    },
+    {
+        "id": "2",
+        "name": "Andres",
+        "nationality": "Venezuelan",
+        "phone":"2267509517",
+        "email":"andresgr2094@gmail.com"
+    }
+]
