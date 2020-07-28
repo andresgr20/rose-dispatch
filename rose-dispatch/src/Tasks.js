@@ -7,6 +7,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from 'react-bootstrap/Button'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Tasks.css';
+import {dict} from './tasks-data.js'
+// import Snackbar from '@material-ui/core/Snackbar';
+// import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -20,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
+//   function Alert(props) {
+//     return <MuiAlert elevation={6} variant="filled" {...props} />;
+//   }
 export default function Tasks() {
     const [show, setShow] = useState(false);
     const [taskName,setName] = useState('Name of the task');
@@ -29,7 +37,9 @@ export default function Tasks() {
     const [taskDate,setDate] = useState('pickup');
     const [startTime,setStartTime] = useState('Now');
     const [endTime,setEndTime] = useState('End');
+    const [description,setDescription] = useState('');
     const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
 
     // useEffect(() => {
     //     document.Modal.Title = taskName;
@@ -37,11 +47,47 @@ export default function Tasks() {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    function checkConflicts(){
+    const handleCloseSnack = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
+    const submit = e =>{
         //true would be replanced by checking the conflict scheudle
+        e.preventDefault();
         if(true){
-            //trigger a toast with
+            dict.push(
+                {"id":2,
+            "info":{
+                "name":taskName,
+                "driver":driver,
+                "location":location,
+                "type":taskType,
+                "date":taskDate,
+                "start-time":startTime,
+                "end-time":endTime,
+                "description":description
+
+            }}
+            )
+            // dict.push(
+            //     [{
+            //         "id":2,
+            //         "info":{
+            //             "name":taskName,
+            //             "driver":driver,
+            //             "location":location,
+            //             "type":taskType,
+            //             "date":taskDate,
+            //             "start-time":startTime,
+            //             "end-time":endTime,
+            //             "description":description
+            //     }
+            // )
+            console.log(dict);
+            setShow(false);
         }else{
             //trigger other popup
         }
@@ -49,6 +95,10 @@ export default function Tasks() {
 
     function handleNameChange(e){
         setName(e.target.value);
+    }
+
+    function handleDescriptionChange(e){
+        setDescription(e.target.value);
     }
 
     function handleDriverChange(e){
@@ -81,25 +131,25 @@ export default function Tasks() {
       </Button>
         <Modal
           show={show}
+          animation={true}
           onHide={() => setShow(false)}
           dialogClassName="modal-90w"
           aria-labelledby="example-custom-modal-styling-title"
         >
           <Modal.Header closeButton>
             <Modal.Title id="example-custom-modal-styling-title">
-              Custom Modal Styling
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-              <form>
-                  <h3>Adding a task</h3>
+              <form onSubmit={submit}>
+                  <h3 className="title">Adding a task</h3>
                   <label>
                       Name:
                       <input 
                       type="text" 
                       name="taskName" 
                       value={taskName} 
-                      onChange={handleNameChange}>
+                      onChange={handleNameChange} required>
                       </input>
                   </label>
                   <label>
@@ -117,8 +167,8 @@ export default function Tasks() {
                     </Dropdown>
                   </label>
                   <label>
-                      Location:
-                      <input type="text" name="locationName" value={location} onChange={handleLocationChange}></input>
+                      Description:
+                      <input type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></input>
                   </label>
                   <label>
                       Type
@@ -127,6 +177,10 @@ export default function Tasks() {
                         <FormControlLabel value="dropoff" control={<Radio />} label="Drop Off" />
                         <FormControlLabel value="other" control={<Radio />} label="Other" />
                     </RadioGroup>
+                  </label>
+                  <label>
+                      Location:
+                      <input type="text" name="locationName" value={location} onChange={handleLocationChange}></input>
                   </label>
                   <label>
                       Date
@@ -141,6 +195,7 @@ export default function Tasks() {
                         shrink: true,
                         }}
                         onChange={handleDateChange}
+                        required
                     />
                   </label>
                   <label>
@@ -149,8 +204,8 @@ export default function Tasks() {
                         id="time"
                         value={startTime}
                         label="Start Date"
-                        type="time"
-                        defaultValue="07:30"
+                        type="integer"
+                        defaultValue="2"
                         className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
@@ -159,6 +214,7 @@ export default function Tasks() {
                         step: 300, // 5 min
                         }}
                         onChange={handleStartTimeChange}
+                        required
                     />
                   </label>
                   <label>
@@ -177,10 +233,11 @@ export default function Tasks() {
                         step: 300, // 5 min
                         }}
                         onChange={handleEndTimeChange}
+                        required
                     />
                   </label>
                   <button onClick={handleClose}>Cancel</button>
-                  <button onClick={checkConflicts}>Submit</button>
+                  <button onClick={submit}>Apply</button>
               </form>
           </Modal.Body>
         </Modal>

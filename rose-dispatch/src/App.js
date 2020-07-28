@@ -6,33 +6,32 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import Tasks from './Tasks.js';
 import driversData from './drivers-data.json';
-import Calendar from 'tui-calendar'; /* ES6 */
-import "tui-calendar/dist/tui-calendar.css";
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Calendar, momentLocalizer } from 'react-big-calendar'
+import moment from 'moment'
 
-// If you use the default popups, use this.
-import 'tui-date-picker/dist/tui-date-picker.css';
-import 'tui-time-picker/dist/tui-time-picker.css';
+const localizer = momentLocalizer(moment)
 
+const MyCalendar = props => (
+  <div>
+    <Calendar
+      localizer={localizer}
+      views="week"
+      // events={myEventsList}
+      startAccessor="start"
+      endAccessor="end"
+      // style={{ height: 500 }}
+    />
+  </div>
+)
 function App() {
 
-var Calendar = require('tui-calendar'); /* CommonJS */
-require("tui-calendar/dist/tui-calendar.css");
-
-// If you use the default popups, use this.
-require("tui-date-picker/dist/tui-date-picker.css");
-require("tui-time-picker/dist/tui-time-picker.css");
-
-var calendar = new Calendar('#calendar', {
-  defaultView: 'month',
-  taskView: true,
-  template: {
-    monthDayname: function(dayname) {
-      return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
-    }
-  }
-});
-
-calendar.changeView('week',true);
+  // const myEventsList = [{  
+  //   title: 'hi',
+  //   start: moment(),
+  //   end: ,
+  //   allDay?: false,
+  //   resource?: any,}];
 
   return (
     <div className="App">
@@ -75,8 +74,9 @@ calendar.changeView('week',true);
       {/* // Dropdown setting the download range */}
       <button>Download</button> 
       {/* // pop up to select range turn the current calendar into csv  */}
-
-      <div id="calendar"></div>
+      
+      {MyCalendar}
+ 
     </div>
   );
 }
