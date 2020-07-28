@@ -6,32 +6,26 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import Tasks from './Tasks.js';
 import driversData from './drivers-data.json';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
+// import 'react-big-calendar/lib/css/react-big-calendar.css';
+import {Calendar} from './Calendar.js'
+// import { Calendar, momentLocalizer } from 'react-big-calendar'
+// import moment from 'moment'
 
-const localizer = momentLocalizer(moment)
+// const localizer = momentLocalizer(moment)
 
-const MyCalendar = props => (
-  <div>
-    <Calendar
-      localizer={localizer}
-      views="week"
-      // events={myEventsList}
-      startAccessor="start"
-      endAccessor="end"
-      // style={{ height: 500 }}
-    />
-  </div>
-)
+
 function App() {
 
-  // const myEventsList = [{  
-  //   title: 'hi',
-  //   start: moment(),
-  //   end: ,
-  //   allDay?: false,
-  //   resource?: any,}];
+// const events = [
+//   {
+//     start: moment().toDate(),
+//     end: moment()
+//       .add(1, "days")
+//       .toDate(),
+//     title: "Some title"
+    
+//   }
+// ]
 
   return (
     <div className="App">
@@ -74,9 +68,15 @@ function App() {
       {/* // Dropdown setting the download range */}
       <button>Download</button> 
       {/* // pop up to select range turn the current calendar into csv  */}
-      
-      {MyCalendar}
- 
+      {/* <Calendar
+          localizer={localizer}
+          defaultDate={new Date()}
+          defaultView="week"
+          view={[]}
+          events={events}
+          style={{ height: "100vh" }}
+        /> */}
+              <Calendar /> 
     </div>
   );
 }
