@@ -14,25 +14,15 @@ function App() {
   function exportCSV(){
     var range = 2;
     var driver = "Jojo Rabbit";
-    console.log('export');
-    console.log('hi from export')
-    // separate somewhere else
     var driverTasks = []
     tasks.forEach((task)=>{
       if(task.info.driver === driver){
-          console.log('filtering driver')
           driverTasks.push(task)
       }
   })
-    // var driverTasks = tasks.filter((index) =>{
-    //   console.log(tasks[index-1]);
-    //   // return index === 0 || driver !== tasks[index-1].info.driver;
-    // });
-    driverTasks.sort((a, b) => b.info.date - a.info.date);
-    console.log(driverTasks);
+    driverTasks.sort((a, b) => new Date(a.info.date)  - new Date(b.info.date));
     const csvRow = [];
     const data = [["Time-Frame","Pickup", "Drop-off", "Other"]];
-    console.log(driverTasks);
     var day,cday = 1;
     var pickup=0;
     var dropoff=0;
@@ -80,12 +70,12 @@ function App() {
     var csvString=csvRow.join('%0A');
     console.log(csvString);
     var a = document.createElement("a");
-    a.href='data:attachment/csv,'+csvString;
-    a.target="_Blank";
-    a.download= driver+"'s Report - "+ range+ " Day Period.csv";
-    document.body.appendChild(a);
-    a.click();
-    console.log('appended');
+    // a.href='data:attachment/csv,'+csvString;
+    // a.target="_Blank";
+    // a.download= driver+"'s Report - "+ range+ " Day Period.csv";
+    // document.body.appendChild(a);
+    // a.click();
+    // console.log('appended');
   
   }
   

@@ -1,3 +1,15 @@
-.title{
-    text-align: center;
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+  }
+
+label{
+    justify-content: right;
+    padding-right: 2em;
+}
+
+.formButton{
+    padding-top: 2em;
 }

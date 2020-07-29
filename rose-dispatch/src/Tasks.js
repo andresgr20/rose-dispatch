@@ -12,6 +12,7 @@ import './Tasks.css';
 import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
 import MenuItem from '@material-ui/core/MenuItem';
+import { TextareaAutosize } from '@material-ui/core';
 // import Snackbar from '@material-ui/core/Snackbar';
 // import MuiAlert from '@material-ui/lab/Alert';
 
@@ -27,21 +28,18 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-//   function Alert(props) {
-//     return <MuiAlert elevation={6} variant="filled" {...props} />;
-//   }
 export default function Tasks() {
     var id = 7;
     function idgen(){return id++};
     const [show, setShow] = useState(false);
     const [taskName,setName] = useState('Name of the task');
-    const [driver,setDriver] = useState('Placeholder');
+    const [driver,setDriver] = useState('Jojo Rabbit');
     const [location,setLocation] = useState('Set Location');
     const [taskType,setTaskType] = useState('pickup');
     const [taskDate,setDate] = useState(new Date().getDate());
-    const [startTime,setStartTime] = useState(new Date().getHours());
-    const [endTime,setEndTime] = useState('End');
-    const [description,setDescription] = useState('Jump rope');
+    const [startTime,setStartTime] = useState(3);
+    const [endTime,setEndTime] = useState(18);
+    const [description,setDescription] = useState('');
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -49,8 +47,15 @@ export default function Tasks() {
     //     document.Modal.Title = taskName;
     // });
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        resetForm();
+        setShow(false);
+    };
+
     const handleShow = () => setShow(true);
+    function checkConflicts(){
+        return false;
+    }
     const handleCloseSnack = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -58,10 +63,11 @@ export default function Tasks() {
     
         setOpen(false);
       };
+    
     const submit = e =>{
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
-        if(true){
+        if(!checkConflicts()){
             tasks.push(
                 {"id":idgen(),
             "info":{
@@ -75,7 +81,9 @@ export default function Tasks() {
                 "description":description
 
             }}
+
             )
+            resetForm()
             console.log(tasks);
             setShow(false);
         }else{
@@ -83,6 +91,16 @@ export default function Tasks() {
         }
     }
 
+    function resetForm(){
+        setName('Name of the task');
+        setDriver('Jojo Rabbit');
+        setDate('');
+        setStartTime(2);
+        setEndTime(18);
+        setDescription('');
+        setTaskType('pickup');
+        setLocation('');
+    }
     function handleNameChange(e){
         setName(e.target.value);
     }
@@ -123,59 +141,53 @@ export default function Tasks() {
           show={show}
           animation={true}
           onHide={() => setShow(false)}
-          dialogClassName="modal-90w"
-          aria-labelledby="example-custom-modal-styling-title"
         >
           <Modal.Header closeButton>
-            <Modal.Title id="example-custom-modal-styling-title">
+            <Modal.Title>
+            Adding a task
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-              <form onSubmit={submit}>
-                  <h3 className="title">Adding a task</h3>
+          <Modal.Body >
+              <form onSubmit={submit} className="form">
+                  <div className="taskBar">
                   <label>
                       Name:
-                      <input 
+                  </label>
+                  <TextField
                       type="text" 
                       name="taskName" 
                       value={taskName} 
                       onChange={handleNameChange} required>
-                      </input>
-                  </label>
+                      </TextField>
+                  </div>
                   <label>
                       Driver:
+                      </label>
                       <Select
                         value={driver}
                         onChange={handleDriverChange}
-                        displayEmpty
-                        className={classes.selectEmpty}
                         >
-                        <MenuItem value="" disabled>
-                            {driver}
-                        </MenuItem>
                         <MenuItem value={"Jojo Rabbit"}>Jojo Rabbit</MenuItem>
                         <MenuItem value={"Katherine Johnson"}>Katherine Johnson</MenuItem>
                         <MenuItem value={"Susana Roberta"}>Susana Roberta</MenuItem>
                         </Select>
-                  </label>
-                  <label>
-                      Description:
-                      <input type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></input>
-                  </label>
                   <label>
                       Type
-                    <RadioGroup aria-label="task" name="task" value={taskType} onChange={handleTaskType}>
-                        <FormControlLabel value="pickup" control={<Radio />} label="Pick Up" />
-                        <FormControlLabel value="dropoff" control={<Radio />} label="Drop Off" />
-                        <FormControlLabel value="other" control={<Radio />} label="Other" />
+                    </label>
+                    <RadioGroup aria-label="task" name="task" value={taskType} onChange={handleTaskType} row>
+                        <FormControlLabel value={"pickup"} control={<Radio />} label="Pick Up" />
+                        <FormControlLabel value={"dropoff"} control={<Radio />} label="Drop Off" />
+                        <FormControlLabel value={"other"} control={<Radio />} label="Other" />
                     </RadioGroup>
-                  </label>
+
                   <label>
                       Location:
+                      </label>
                       <input type="text" name="locationName" value={location} onChange={handleLocationChange}></input>
-                  </label>
+
                   <label>
                       Date
+                      </label>
                     <TextField
                         id="date"
                         value={taskDate}
@@ -189,47 +201,45 @@ export default function Tasks() {
                         onChange={handleDateChange}
                         required
                     />
-                  </label>
+
                   <label>
                      Start Time
+                     </label>
                      <TextField
-                        id="time"
                         value={startTime}
-                        label="Start Date"
+                        label="Start Time"
                         type="integer"
-                        defaultValue="2"
+                        defaultValue={startTime}
                         className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
-                        }}
-                        inputProps={{
-                        step: 300, // 5 min
                         }}
                         onChange={handleStartTimeChange}
                         required
                     />
-                  </label>
+
                   <label>
                      End Time
+                     </label>
                      <TextField
-                        id="time"
                         value={endTime}
-                        label="Start Date"
-                        type="time"
-                        defaultValue="07:30"
+                        label="End Time"
+                        type="integer"
+                        defaultValue={endTime}
                         className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
                         }}
-                        inputProps={{
-                        step: 300, // 5 min
-                        }}
                         onChange={handleEndTimeChange}
                         required
                     />
-                  </label>
-                  <button onClick={handleClose}>Cancel</button>
-                  <button onClick={submit}>Apply</button>
+
+                  <label>
+                      Description:
+                      </label>
+                      <textarea type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></textarea>
+                  <button onClick={handleClose} className="formButton">Cancel</button>
+                  <button onClick={submit} className="formButton" >Apply</button>
               </form>
           </Modal.Body>
         </Modal>
