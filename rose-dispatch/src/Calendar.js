@@ -2,7 +2,6 @@ import React, {useContext,useState} from 'react';
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from '@fullcalendar/daygrid'
-import moment from 'moment'
 import { tasks } from "./tasks-data";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
