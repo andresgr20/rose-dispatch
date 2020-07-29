@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,createContext,useReducer } from 'react';
 import logo from './logo-grey.png';
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -22,7 +22,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const reducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case "allEvents":
+      return { ...state, allEvents: action.payload };
+    default:
+      return state;
+  }
+};
+
+// Set up Initial State
+const INITIAL_STATE = {
+  allEvents: tasks
+};
+
+export const taskContext = createContext();
+export const driverContext = createContext();
+
 function App() {
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const classes = useStyles();
   const [period,setPeriod] = useState(2);
   const [driver,setDriver] = useState('Jojo Rabbit');
@@ -154,7 +172,9 @@ function dateDiff(date1,date2){
               </Dropdown>
             </li>
             <li>
-            <Tasks></Tasks>
+            <taskContext.Provider value={{state,dispatch}}>
+            <Tasks/>
+           </taskContext.Provider>
 
           {/* // Create a new task for  a user, if there is a conflict with a task it will recommned another driver or another time for the same driver 
           // A task should have Driver, Type, time duration, Description, Location,nationality
@@ -194,7 +214,9 @@ function dateDiff(date1,date2){
             </Select>
       <button onClick={exportCSV}>Download</button> 
       {/* // pop up to select period turn the current calendar into csv  */}
+      <taskContext.Provider value={{state,dispatch}}>
       <Calendar /> 
+      </taskContext.Provider>
     </div>
   );
 }

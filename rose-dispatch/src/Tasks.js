@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext} from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -12,9 +12,7 @@ import './Tasks.css';
 import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
 import MenuItem from '@material-ui/core/MenuItem';
-import { TextareaAutosize } from '@material-ui/core';
-// import Snackbar from '@material-ui/core/Snackbar';
-// import MuiAlert from '@material-ui/lab/Alert';
+import {taskContext} from './App';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -29,7 +27,13 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export default function Tasks() {
-    var id = 7;
+    const {state, dispatch} = useContext(taskContext);
+
+    const changeInputValue = (newValue) => {
+
+        dispatch({ type: 'UPDATE_INPUT', data: newValue,});
+    };
+    var id = 8;
     function idgen(){return id++};
     const [show, setShow] = useState(false);
     const [taskName,setName] = useState('Name of the task');
@@ -64,6 +68,7 @@ export default function Tasks() {
         setOpen(false);
       };
     
+      
     const submit = e =>{
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
@@ -79,10 +84,13 @@ export default function Tasks() {
                 "startTime":startTime,
                 "endTime":endTime,
                 "description":description
-
             }}
 
             )
+            dispatch({
+                type: "allEvents",
+                payload: tasks
+            });
             resetForm()
             console.log(tasks);
             setShow(false);

@@ -7,6 +7,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 
+
 const useStyles = makeStyles((theme) => ({
     formControl: {
       margin: theme.spacing(1),
@@ -18,13 +19,12 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export function Calendar({}){
-    // const { tasks } = useContext(TaskContext);
     const [driver,setDriver] = useState('Jojo Rabbit');
     function handleDriverChange(e){
         setDriver(e.target.value);
 
     }
-    function determineCalendar(driver){
+    function determineCalendar(){
         var events = []
         tasks.forEach((task)=>{
             if(task.info.driver === driver){
@@ -42,9 +42,7 @@ export function Calendar({}){
     };
     const myevents = determineCalendar(driver);
     const classes = useStyles();
-    //     const events = [{ id: 1, title: "Event Now", start: new Date(), end: '2020-07-28 18:00:00' },
-//     {id: 2, title: "Event Now", start: new Date("2020-07-28 12:00"), end: '2020-07-28 20:00:00'} 
-// ];
+
     return (<>
         <label>
             Driver:
@@ -54,9 +52,6 @@ export function Calendar({}){
             displayEmpty
             className={classes.selectEmpty}
             >
-            <MenuItem value="" disabled>
-                {driver}
-            </MenuItem>
             <MenuItem value={"Jojo Rabbit"}>Jojo Rabbit</MenuItem>
             <MenuItem value={"Katherine Johnson"}>Katherine Johnson</MenuItem>
             <MenuItem value={"Susana Roberta"}>Susana Roberta</MenuItem>
