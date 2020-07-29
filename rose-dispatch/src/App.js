@@ -6,27 +6,89 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import Tasks from './Tasks.js';
 import driversData from './drivers-data.json';
-// import 'react-big-calendar/lib/css/react-big-calendar.css';
 import {Calendar} from './Calendar.js'
-// import { Calendar, momentLocalizer } from 'react-big-calendar'
-// import moment from 'moment'
-
-// const localizer = momentLocalizer(moment)
+import { tasks } from './tasks-data';
 
 
 function App() {
-
-// const events = [
-//   {
-//     start: moment().toDate(),
-//     end: moment()
-//       .add(1, "days")
-//       .toDate(),
-//     title: "Some title"
-    
-//   }
-// ]
-
+  function exportCSV(){
+    var range = 2;
+    var driver = "Jojo Rabbit";
+    console.log('export');
+    console.log('hi from export')
+    // separate somewhere else
+    var driverTasks = []
+    tasks.forEach((task)=>{
+      if(task.info.driver === driver){
+          console.log('filtering driver')
+          driverTasks.push(task)
+      }
+  })
+    // var driverTasks = tasks.filter((index) =>{
+    //   console.log(tasks[index-1]);
+    //   // return index === 0 || driver !== tasks[index-1].info.driver;
+    // });
+    driverTasks.sort((a, b) => b.info.date - a.info.date);
+    console.log(driverTasks);
+    const csvRow = [];
+    const data = [["Time-Frame","Pickup", "Drop-off", "Other"]];
+    console.log(driverTasks);
+    var day,cday = 1;
+    var pickup=0;
+    var dropoff=0;
+    var other=0;
+    switch(driverTasks[0].info.type){
+      case 0:
+        pickup++;
+        break;
+      case 1:
+        dropoff++;
+        break;
+      default:
+        other++;
+    }
+    for(var i = 1; i< driverTasks.length;i++){
+        switch(driverTasks[i].info.type){
+        case 0:
+          pickup++;
+          break;
+        case 1:
+          dropoff++;
+          break;
+        default:
+          other++;
+      }
+      data.push(['Day '+ cday - range +' - Day '+ cday,pickup,dropoff,other])
+      // if(driverTasks[i].info.date > driverTasks[i-1].info.date){
+      //   day++;
+      //   cday++;
+      //   if(day === range+1 || i === driverTasks.length-1){
+      //     data.push(['Day '+ cday - range +' - Day '+ cday,pickup,dropoff,other])
+      //     pickup=0;
+      //     dropoff=0;
+      //     other=0;
+      //     day=1;
+      //   }
+      // }
+    }
+    console.log(data);
+    data.forEach((row) => {
+      csvRow.push(row.join(','));
+    })
+    console.log(data);
+  
+    var csvString=csvRow.join('%0A');
+    console.log(csvString);
+    var a = document.createElement("a");
+    a.href='data:attachment/csv,'+csvString;
+    a.target="_Blank";
+    a.download= driver+"'s Report - "+ range+ " Day Period.csv";
+    document.body.appendChild(a);
+    a.click();
+    console.log('appended');
+  
+  }
+  
   return (
     <div className="App">
         <nav className="navBar">
@@ -66,17 +128,9 @@ function App() {
       {/* // turn into pdf and print calendar for the week */}
       <button>Print</button> 
       {/* // Dropdown setting the download range */}
-      <button>Download</button> 
+      <button onClick={exportCSV}>Download</button> 
       {/* // pop up to select range turn the current calendar into csv  */}
-      {/* <Calendar
-          localizer={localizer}
-          defaultDate={new Date()}
-          defaultView="week"
-          view={[]}
-          events={events}
-          style={{ height: "100vh" }}
-        /> */}
-              <Calendar /> 
+      <Calendar /> 
     </div>
   );
 }

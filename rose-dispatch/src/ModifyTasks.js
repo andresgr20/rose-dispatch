@@ -9,11 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Tasks.css';
-import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
-import MenuItem from '@material-ui/core/MenuItem';
-// import Snackbar from '@material-ui/core/Snackbar';
-// import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -30,18 +26,16 @@ const useStyles = makeStyles((theme) => ({
 //   function Alert(props) {
 //     return <MuiAlert elevation={6} variant="filled" {...props} />;
 //   }
-export default function Tasks() {
-    var id = 7;
-    function idgen(){return id++};
+export default function ModifyTasks() {
     const [show, setShow] = useState(false);
     const [taskName,setName] = useState('Name of the task');
-    const [driver,setDriver] = useState('Placeholder');
+    const [driver,setDriver] = useState('Joe');
     const [location,setLocation] = useState('Set Location');
     const [taskType,setTaskType] = useState('pickup');
-    const [taskDate,setDate] = useState(new Date().getDate());
-    const [startTime,setStartTime] = useState(new Date().getHours());
+    const [taskDate,setDate] = useState('pickup');
+    const [startTime,setStartTime] = useState('Now');
     const [endTime,setEndTime] = useState('End');
-    const [description,setDescription] = useState('Jump rope');
+    const [description,setDescription] = useState('');
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -62,8 +56,8 @@ export default function Tasks() {
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
         if(true){
-            tasks.push(
-                {"id":idgen(),
+            dict.push(
+                {"id":2,
             "info":{
                 "name":taskName,
                 "driver":driver,
@@ -76,7 +70,21 @@ export default function Tasks() {
 
             }}
             )
-            console.log(tasks);
+            // dict.push(
+            //     [{
+            //         "id":2,
+            //         "info":{
+            //             "name":taskName,
+            //             "driver":driver,
+            //             "location":location,
+            //             "type":taskType,
+            //             "date":taskDate,
+            //             "startTime":startTime,
+            //             "endTime":endTime,
+            //             "description":description
+            //     }
+            // )
+            console.log(dict);
             setShow(false);
         }else{
             //trigger other popup
@@ -144,19 +152,17 @@ export default function Tasks() {
                   </label>
                   <label>
                       Driver:
-                      <Select
-                        value={driver}
-                        onChange={handleDriverChange}
-                        displayEmpty
-                        className={classes.selectEmpty}
-                        >
-                        <MenuItem value="" disabled>
-                            {driver}
-                        </MenuItem>
-                        <MenuItem value={"Jojo Rabbit"}>Jojo Rabbit</MenuItem>
-                        <MenuItem value={"Katherine Johnson"}>Katherine Johnson</MenuItem>
-                        <MenuItem value={"Susana Roberta"}>Susana Roberta</MenuItem>
-                        </Select>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic" 
+                        value={driver} onChange={handleDriverChange}>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                   </label>
                   <label>
                       Description:
