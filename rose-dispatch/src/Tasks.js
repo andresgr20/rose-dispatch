@@ -1,6 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, { useState, useEffect,useContext} from "react";
-import Dropdown from 'react-bootstrap/Dropdown';
+import React, { useState, useEffect,useContext} from "react"; 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -13,6 +12,7 @@ import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
 import MenuItem from '@material-ui/core/MenuItem';
 import {taskContext} from './App';
+import PopUpSnack from './PopUpSnack';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -26,8 +26,24 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
+  const reducerSnack = (state = INITIAL_STATE, action) => {
+    switch (action.type) {
+      case "show":
+        return { ...state, allEvents: action.payload };
+      default:
+        return state;
+    }
+  };
+
+    // Set up Initial State
+    const INITIAL_STATE = {
+        show: false,
+        callback: null
+        };
+
 export default function Tasks() {
     const {state, dispatch} = useContext(taskContext);
+    const [showPopUp,changePopUp] = useState(false);
 
     const changeInputValue = (newValue) => {
 
@@ -35,7 +51,8 @@ export default function Tasks() {
     };
     var id = 8;
     function idgen(){return id++};
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(false);  
+    const [open, setOpen] = useState(false);
     const [taskName,setName] = useState('Name of the task');
     const [driver,setDriver] = useState('Jojo Rabbit');
     const [location,setLocation] = useState('Set Location');
@@ -45,7 +62,6 @@ export default function Tasks() {
     const [endTime,setEndTime] = useState(18);
     const [description,setDescription] = useState('');
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
 
     // useEffect(() => {
     //     document.Modal.Title = taskName;
@@ -60,14 +76,6 @@ export default function Tasks() {
     function checkConflicts(){
         return false;
     }
-    const handleCloseSnack = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
-        }
-    
-        setOpen(false);
-      };
-    
       
     const submit = e =>{
         //true would be replanced by checking the conflict scheudle
@@ -91,6 +99,7 @@ export default function Tasks() {
                 type: "allEvents",
                 payload: tasks
             });
+            setOpen(true);
             resetForm()
             console.log(tasks);
             setShow(false);
@@ -246,8 +255,9 @@ export default function Tasks() {
                       Description:
                       </label>
                       <textarea type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></textarea>
-                  <button onClick={handleClose} className="formButton">Cancel</button>
-                  <button onClick={submit} className="formButton" >Apply</button>
+                  <button  onClick={handleClose} className="formButton">Cancel</button>
+                  <button  onClick={submit} className="formButton" >Apply</button>
+                {/* <PopUpSnack value={open} onChange={setOpen}/> */}
               </form>
           </Modal.Body>
         </Modal>

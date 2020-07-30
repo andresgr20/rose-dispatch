@@ -28,7 +28,6 @@ export function Calendar({}){
         var events = []
         tasks.forEach((task)=>{
             if(task.info.driver === driver){
-                console.log('hi')
                 events.push({
                     "id":task.id,
                     "title":task.info.name,
@@ -37,7 +36,6 @@ export function Calendar({}){
                 })
             }
         })
-        // console.log(events);
         return events;
     };
     const myevents = determineCalendar(driver);
@@ -66,7 +64,6 @@ export function Calendar({}){
           right: "dayGridWeek,timeGridWeek,timeGridDay,listWeek"
         }}
         plugins={[dayGridPlugin, timeGridPlugin]}
-        //ref={this.calendarComponentRef}
         weekends={true}
         events={myevents}
         droppable={true}
@@ -74,15 +71,6 @@ export function Calendar({}){
         slotDuration={'00:30:00'}
         displayEventEnd={true}
         eventRender={info => {
-            console.log(new Date())
-          // console.log(info);
-          // console.log(eventRefs, info.el, info.event.id);
-          // if (!eventRefs[info.event.id]) {
-          //   setEventRefs({
-          //     ...eventRefs,
-          //     [info.event.id]: info.el
-          //   });
-          // }
         }}
       />}
     </>

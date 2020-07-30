@@ -11,6 +11,7 @@ import { tasks } from './tasks-data';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -58,6 +59,28 @@ function dateDiff(date1,date2){
   return diffDays;
 }
 
+function addDays(date) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + period);
+  var dateString = [result.getFullYear(),"-",result.getMonth()+1,"-",result.getDate()].join('');
+  return dateString;
+}
+ 
+function checkDatesRange(d1,d2,d3){
+  var dateFrom = d1;
+  var dateTo = addDays(d1);
+  var dateCheck = d3;
+  
+  var d1 = dateFrom.split("-");
+  var d2 = dateTo.split("-");
+  var c = dateCheck.split("-");
+  
+  var from = new Date(d1[2], parseInt(d1[1])-1, d1[0]);  // -1 because months are from 0 to 11
+  var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0]);
+  var check = new Date(c[2], parseInt(c[1])-1, c[0]);
+  return check >= from && check < to;
+}
+
   function exportCSV(){
     var driverTasks = []
     tasks.forEach((task)=>{
@@ -70,10 +93,12 @@ function dateDiff(date1,date2){
     console.log(driverTasks)
     const csvRow = [];
     const data = [["Time-Frame","Pickup", "Drop-off", "Other"]];
-    var day = 1;
     var pickup=0;
     var dropoff=0;
     var other=0;
+    var initDay = driverTasks[0].info.date;
+    var periodClose = addDays(initDay);
+    var row = 0;
     switch(driverTasks[0].info.type){
       case 'pickup':
         pickup++;
@@ -84,54 +109,33 @@ function dateDiff(date1,date2){
       default:
         other++;
     }
-    var row = 0;
-    for(var i = 1; i< driverTasks.length;i++){
-      const diffDays = dateDiff(driverTasks[i-1].info.date,driverTasks[i].info.date);
-      const emptyPeriod = Math.ceil(diffDays/period)-1;
-      if(emptyPeriod === 0){
-        for(var i = 0; i<emptyPeriod;i++){
-          pickup = 0;
-          dropoff=0;
-          other=0;
-          data.push(['Day '+ (1+period*row) +' - Day '+ (1+period*(row+1)),pickup,dropoff,other]) 
-          row++;       
-        }
-        day=diffDays-row*period;
-      }
-      if(diffDays === 0){
-        switch(driverTasks[i].info.type){
-          case 'pickup':
-          pickup++;
-          break;
-        case 'dropoff':
-          dropoff++;
-          break;
-        default:
-          other++;
-        }
-      }else if(diffDays===1 && day-period !== 0){
-        day++;
-        switch(driverTasks[i].info.type){
-          case 'pickup':
-          pickup++;
-          break;
-        case 'dropoff':
-          dropoff++;
-          break;
-        default:
-          other++;
-      }
-    } else if(day - period === 0 || i === driverTasks.length-1){
-      data.push(['Day '+ (1+period*row) +' - Day '+ (1+period*(row+1)),pickup,dropoff,other]) 
-      row++;
-      pickup=0;
-      dropoff=0;
-      other=0;
-      day=1;
-    }else{
+for(var i = 1; i<driverTasks.length;i++){
+  while(!checkDatesRange(initDay,periodClose,driverTasks[i].info.date)){
+    console.log(driverTasks[i].info.date);
+    data.push(['Day '+ (1+period*row) +' - Day '+ (1+period*(row+1)),pickup,dropoff,other])
+    row++;
+    pickup = 0;
+    dropoff=0;
+    other=0;
+    initDay= periodClose;
+    periodClose = addDays(periodClose);
+  }
+  switch(driverTasks[0].info.type){
+    case 'pickup':
+      pickup++;
+      break;
+    case 'dropoff':
+      dropoff++;
+      break;
+    default:
+      other++;
+  }
+  initDay= addDays(periodClose);
+  if(driverTasks.length-1 === i){
+    data.push(['Day '+ (1+period*row) +' - Day '+ (1+period*(row+1)),pickup,dropoff,other])
+  }
 
-    }
-    }
+}
     console.log(data);
     data.forEach((row) => {
       csvRow.push(row.join(','));
