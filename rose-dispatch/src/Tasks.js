@@ -12,7 +12,6 @@ import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
 import MenuItem from '@material-ui/core/MenuItem';
 import {taskContext} from './App';
-import PopUpSnack from './PopUpSnack';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -32,7 +31,7 @@ export default function Tasks() {
     const {state, dispatch} = useContext(taskContext);
     var id = 8;
     function idgen(){return id++};
-    const [show, setShow] = useState(false);  
+    const [showForm, setShowForm] = useState(false);  
     const [open, setOpen] = useState(false);
     const [taskName,setName] = useState('Name of the task');
     const [driver,setDriver] = useState('Jojo Rabbit');
@@ -50,10 +49,10 @@ export default function Tasks() {
 
     const handleClose = () => {
         resetForm();
-        setShow(false);
+        setShowForm(false);
     };
 
-    const handleShow = () => setShow(true);
+    const handleShow = () => setShowForm(true);
 
     function checkConflicts(events){
         for(var i=0;i<events.length;i++){
@@ -96,7 +95,7 @@ export default function Tasks() {
         })
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
-        if(!checkConflicts(events)){
+        if(false){
             tasks.push(
                 {"id":idgen(),
             "info":{
@@ -122,10 +121,14 @@ export default function Tasks() {
             setOpen(true);
             resetForm()
             console.log(tasks);
-            setShow(false);
+            setShowForm(false);
         }else{
+            console.log('conflict');
             fixConflict(events);
-            //trigger other popup
+            dispatch({
+                type: 'showConflict',
+                payload: true
+            })
         }
     }
 
@@ -176,9 +179,9 @@ export default function Tasks() {
         Add Tasks
       </Button>
         <Modal
-          show={show}
+          show={showForm}
           animation={true}
-          onHide={() => setShow(false)}
+          onHide={() => setShowForm(false)}
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -278,7 +281,6 @@ export default function Tasks() {
                       <textarea type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></textarea>
                   <button  onClick={handleClose} className="formButton">Cancel</button>
                   <button  onClick={submit} className="formButton" >Apply</button>
-                {/* <PopUpSnack value={open} onChange={setOpen}/> */}
               </form>
           </Modal.Body>
         </Modal>

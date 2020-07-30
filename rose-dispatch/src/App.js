@@ -11,8 +11,8 @@ import { tasks } from './tasks-data';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
-import moment from 'moment';
 import PopUpSnack from './PopUpSnack';
+import ConflictPopUp from './ConflictPopUp';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -30,7 +30,9 @@ const reducer = (state = INITIAL_STATE, action) => {
     case "allEvents":
       return { ...state, allEvents: action.payload };
     case 'show':
-      return {...state, show: action.payload}
+      return {...state, show: action.payload};
+    case 'showConflict':
+      return {...state, showConflict: action.payload};
     default:
       return state;
   }
@@ -39,7 +41,8 @@ const reducer = (state = INITIAL_STATE, action) => {
 // Set up Initial State
 const INITIAL_STATE = {
   allEvents: tasks,
-  show: false
+  show: false,
+  showConflict: false
 };
 
 export const taskContext = createContext();
@@ -76,7 +79,7 @@ function checkDatesRange(d1,d2,d3){
   var from = new Date(d1[2], parseInt(d1[1])-1, d1[0]);  // -1 because months are from 0 to 11
   var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0]);
   var check = new Date(c[2], parseInt(c[1])-1, c[0]);
-  return check >= from && check < to;
+  return check >= from && check <= to;
 }
 
   function exportCSV(){
@@ -177,6 +180,7 @@ for(var i = 1; i<driverTasks.length;i++){
             <taskContext.Provider value={{state,dispatch}}>
             <Tasks/>
             <PopUpSnack/>
+            <ConflictPopUp/>
            </taskContext.Provider>
 
           {/* // Create a new task for  a user, if there is a conflict with a task it will recommned another driver or another time for the same driver 
