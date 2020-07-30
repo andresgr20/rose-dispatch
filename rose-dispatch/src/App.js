@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import PopUpSnack from './PopUpSnack';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -23,10 +24,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "allEvents":
       return { ...state, allEvents: action.payload };
+    case 'show':
+      return {...state, show: action.payload}
     default:
       return state;
   }
@@ -34,7 +38,8 @@ const reducer = (state = INITIAL_STATE, action) => {
 
 // Set up Initial State
 const INITIAL_STATE = {
-  allEvents: tasks
+  allEvents: tasks,
+  show: false
 };
 
 export const taskContext = createContext();
@@ -51,20 +56,13 @@ function App() {
 
 }
 
-function dateDiff(date1,date2){
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  const diffTime = Math.abs(d2 - d1);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-  return diffDays;
-}
-
 function addDays(date) {
   var result = new Date(date);
   result.setDate(result.getDate() + period);
   var dateString = [result.getFullYear(),"-",result.getMonth()+1,"-",result.getDate()].join('');
   return dateString;
 }
+
  
 function checkDatesRange(d1,d2,d3){
   var dateFrom = d1;
@@ -178,6 +176,7 @@ for(var i = 1; i<driverTasks.length;i++){
             <li>
             <taskContext.Provider value={{state,dispatch}}>
             <Tasks/>
+            <PopUpSnack/>
            </taskContext.Provider>
 
           {/* // Create a new task for  a user, if there is a conflict with a task it will recommned another driver or another time for the same driver 

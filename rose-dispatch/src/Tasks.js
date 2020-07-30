@@ -26,29 +26,10 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-  const reducerSnack = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-      case "show":
-        return { ...state, allEvents: action.payload };
-      default:
-        return state;
-    }
-  };
 
-    // Set up Initial State
-    const INITIAL_STATE = {
-        show: false,
-        callback: null
-        };
 
 export default function Tasks() {
     const {state, dispatch} = useContext(taskContext);
-    const [showPopUp,changePopUp] = useState(false);
-
-    const changeInputValue = (newValue) => {
-
-        dispatch({ type: 'UPDATE_INPUT', data: newValue,});
-    };
     var id = 8;
     function idgen(){return id++};
     const [show, setShow] = useState(false);  
@@ -73,14 +54,49 @@ export default function Tasks() {
     };
 
     const handleShow = () => setShow(true);
-    function checkConflicts(){
+
+    function checkConflicts(events){
+        for(var i=0;i<events.length;i++){
+            if((events[i].info.startTime < startTime) && events[i].info.endTime> endTime){
+                console.log('conflict');
+                return true;
+            }
+        }
         return false;
     }
-      
+    
+    function fixConflict(events){
+        var start,end;
+        events.sort((a,b) => a.info.startTime < b.info.startTime);
+        // const schedule = [{}]
+        // for(var i =0;i<24;i++){
+        //     schedule.push({i: 0});
+        // }
+        // events.forEach((task)=>{
+        //     schedule[task.info.startTime] = 1;
+        //     var r =  task.info.endTime - task.info.startTime;
+        //     for(var i =0; i<r;i++){
+        //         schedule[r-i]=1
+        //     }
+        // });
+        var dur = endTime - startTime;
+        // schedule.forEach((time,key) =>{
+        //     if(key === 0)
+        // });
+        // for(var i = 1; i <events.length;i++){
+        //     if(events[i].info.startTime )
+        // }
+    }
     const submit = e =>{
+        var events = []
+        tasks.forEach((task)=>{
+            if(task.info.driver === driver && task.info.date===taskDate){
+                events.push(task);
+            }
+        })
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
-        if(!checkConflicts()){
+        if(!checkConflicts(events)){
             tasks.push(
                 {"id":idgen(),
             "info":{
@@ -99,11 +115,16 @@ export default function Tasks() {
                 type: "allEvents",
                 payload: tasks
             });
+            dispatch({
+                type: 'show',
+                payload: true
+            })
             setOpen(true);
             resetForm()
             console.log(tasks);
             setShow(false);
         }else{
+            fixConflict(events);
             //trigger other popup
         }
     }
