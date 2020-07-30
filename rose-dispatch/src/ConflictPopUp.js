@@ -7,16 +7,14 @@ export default function ConflictPopUp() {
   const {state, dispatch} = useContext(taskContext);
     const [show, setShow] = useState(false);
     const handleClose = () => {
-      setShow(false)
       dispatch({ type: 'showConflict', payload: false});
     };
-    const handleShow = () => setShow(true);
 
     function handleConflict(){
-
+      dispatch({ type: 'show', payload: true});
     }
     function handleOverwrite(){
-
+      dispatch({ type: 'show', payload: true});
     }
     return (
       <>

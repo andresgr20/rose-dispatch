@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
 import MenuItem from '@material-ui/core/MenuItem';
 import {taskContext} from './App';
+import { letterSpacing } from '@material-ui/system';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -28,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Tasks() {
+    var start = 0;
+    var end = 0;
     const {state, dispatch} = useContext(taskContext);
     var id = 8;
     function idgen(){return id++};
@@ -64,27 +67,85 @@ export default function Tasks() {
         return false;
     }
     
-    function fixConflict(events){
-        var start,end;
-        events.sort((a,b) => a.info.startTime < b.info.startTime);
-        // const schedule = [{}]
-        // for(var i =0;i<24;i++){
-        //     schedule.push({i: 0});
-        // }
-        // events.forEach((task)=>{
-        //     schedule[task.info.startTime] = 1;
-        //     var r =  task.info.endTime - task.info.startTime;
-        //     for(var i =0; i<r;i++){
-        //         schedule[r-i]=1
-        //     }
-        // });
+    function fixConflict(schedule){
         var dur = endTime - startTime;
-        // schedule.forEach((time,key) =>{
-        //     if(key === 0)
-        // });
-        // for(var i = 1; i <events.length;i++){
-        //     if(events[i].info.startTime )
-        // }
+        var cdur = dur;
+        for(var i = 0; i<24 || cdur === dur;i++){
+            if(schedule[i] === 0 && cdur === dur){
+                cdur--;
+                start = i;
+            }else if(schedule[i] === 0){
+                cdur--;
+            }else{
+                cdur = dur;
+            }
+        }
+        if(cdur === 0){
+            end = start + dur;
+            tasks.push(
+                {"id":idgen(),
+            "info":{
+                "name":taskName,
+                "driver":driver,
+                "location":location,
+                "type":taskType,
+                "date":taskDate,
+                "startTime":start,
+                "endTime":end,
+                "description":description
+            }})
+            dispatch({
+                type: 'show',
+                payload: true
+            });
+            dispatch({
+                type: "allEvents",
+                payload: tasks
+            });
+            return true;
+        }
+        return false;
+        }
+
+        function removeTask(task){
+            var index = 0;
+            for(var i = 0; i<tasks.length;i++){
+                if(task.id === tasks[i].id){
+                    index=i;
+                    break;
+                }
+            }
+            if (index > -1) {
+              tasks.splice(index, 1);
+            }
+        }
+    function overwriteConflict(events){
+        for(var i=0;i<events.length;i++){
+            if((events[i].info.startTime < startTime) && events[i].info.endTime> endTime){
+                removeTask(events[i]);
+            }
+        }
+        tasks.push(
+            {"id":idgen(),
+        "info":{
+            "name":taskName,
+            "driver":driver,
+            "location":location,
+            "type":taskType,
+            "date":taskDate,
+            "startTime":startTime,
+            "endTime":endTime,
+            "description":description
+        }})
+        dispatch({
+            type: 'show',
+            payload: true
+        });
+        dispatch({
+            type: "allEvents",
+            payload: tasks
+        });
+
     }
     const submit = e =>{
         var events = []
@@ -93,6 +154,7 @@ export default function Tasks() {
                 events.push(task);
             }
         })
+        events.sort((a,b) => a.info.startTime < b.info.startTime);
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
         if(false){
@@ -123,8 +185,22 @@ export default function Tasks() {
             console.log(tasks);
             setShowForm(false);
         }else{
+            const schedule = []
+            for(var i =0;i<24;i++){
+                var e = {};
+                e[i] = 0
+                schedule.push(e);
+            }
+            events.forEach((task)=>{
+                schedule[task.info.startTime]= 1;
+                var r =  task.info.endTime - task.info.startTime;
+                for(var i =0; i<r;i++){
+                    schedule[r-i]=1
+                }
+            });
             console.log('conflict');
-            fixConflict(events);
+            fixConflict(schedule);
+            overwriteConflict(schedule,events);
             dispatch({
                 type: 'showConflict',
                 payload: true
