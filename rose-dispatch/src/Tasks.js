@@ -34,8 +34,7 @@ export default function Tasks() {
     const {state, dispatch} = useContext(taskContext);
     var id = 8;
     function idgen(){return id++};
-    const [showForm, setShowForm] = useState(false);  
-    const [open, setOpen] = useState(false);
+    const [showForm, setShowForm] = useState(false);
     const [taskName,setName] = useState('Name of the task');
     const [driver,setDriver] = useState('Jojo Rabbit');
     const [location,setLocation] = useState('Set Location');
@@ -46,10 +45,6 @@ export default function Tasks() {
     const [description,setDescription] = useState('');
     const classes = useStyles();
 
-    // useEffect(() => {
-    //     document.Modal.Title = taskName;
-    // });
-
     const handleClose = () => {
         resetForm();
         setShowForm(false);
@@ -58,8 +53,10 @@ export default function Tasks() {
     const handleShow = () => setShowForm(true);
 
     function checkConflicts(events){
+        console.log(events);
         for(var i=0;i<events.length;i++){
-            if((events[i].info.startTime < startTime) && events[i].info.endTime> endTime){
+            if((startTime>= events[i].info.startTime) && (startTime<= events[i].info.endTime) 
+            || (endTime>= events[i].info.startTime) && (endTime<= events[i].info.endTime)){
                 console.log('conflict');
                 return true;
             }
@@ -70,17 +67,29 @@ export default function Tasks() {
     function fixConflict(schedule){
         var dur = endTime - startTime;
         var cdur = dur;
-        for(var i = 0; i<24 || cdur === dur;i++){
-            if(schedule[i] === 0 && cdur === dur){
+        console.log(schedule);
+        for(var i = 0; i<24;i++){
+            var s = i +'';
+            console.log(schedule[i][s]);
+            console.log(cdur);
+            if(cdur === 0){
+                break;
+            }
+            if(schedule[i][s] === 0 && cdur === dur){
                 cdur--;
-                start = i;
-            }else if(schedule[i] === 0){
+                start = i
+                console.log(i);
+            }else if(schedule[i][s] === 0){
+    
                 cdur--;
             }else{
                 cdur = dur;
             }
         }
+        console.log(cdur);
         if(cdur === 0){
+            console.log(start)
+            console.log(end)
             end = start + dur;
             tasks.push(
                 {"id":idgen(),
@@ -120,8 +129,11 @@ export default function Tasks() {
             }
         }
     function overwriteConflict(events){
+        console.log(startTime)
+        console.log(events);
         for(var i=0;i<events.length;i++){
-            if((events[i].info.startTime < startTime) && events[i].info.endTime> endTime){
+            if((startTime>= events[i].info.startTime) && (startTime<= events[i].info.endTime) 
+            || (endTime>= events[i].info.startTime) && (endTime<= events[i].info.endTime)){
                 removeTask(events[i]);
             }
         }
@@ -157,7 +169,7 @@ export default function Tasks() {
         events.sort((a,b) => a.info.startTime < b.info.startTime);
         //true would be replanced by checking the conflict scheudle
         e.preventDefault();
-        if(false){
+        if(!checkConflicts(events)){
             tasks.push(
                 {"id":idgen(),
             "info":{
@@ -180,7 +192,6 @@ export default function Tasks() {
                 type: 'show',
                 payload: true
             })
-            setOpen(true);
             resetForm()
             console.log(tasks);
             setShowForm(false);
@@ -191,20 +202,42 @@ export default function Tasks() {
                 e[i] = 0
                 schedule.push(e);
             }
+            console.log(schedule[1]['1'])
             events.forEach((task)=>{
-                schedule[task.info.startTime]= 1;
+                var s = ''+ task.info.startTime;
+                schedule[task.info.startTime][s]= 1;
                 var r =  task.info.endTime - task.info.startTime;
                 for(var i =0; i<r;i++){
-                    schedule[r-i]=1
+                    var n =  task.info.startTime+i;
+                    s = n+'';
+                    schedule[task.info.startTime+i][s]=1;
                 }
             });
+            console.log(schedule);
             console.log('conflict');
-            fixConflict(schedule);
-            overwriteConflict(schedule,events);
             dispatch({
                 type: 'showConflict',
                 payload: true
             })
+            console.log(state.fixConflict);
+            if(state.overwriteConflict){
+                console.log('overwriteConflict')
+                overwriteConflict(events);
+                console.log('finish overwrite')
+                dispatch({ type: 'overwriteConflict', payload: false});
+                resetForm()
+                console.log(tasks);
+                setShowForm(false);
+            }else if(state.fixConflict){
+                console.log('fixConflict')
+                fixConflict(schedule);
+                console.log('finish fix')
+                dispatch({ type: 'fixConflict', payload: false});
+                resetForm()
+                console.log(tasks);
+                setShowForm(false);
+            }
+
         }
     }
 

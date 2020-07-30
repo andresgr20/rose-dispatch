@@ -13,6 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import PopUpSnack from './PopUpSnack';
 import ConflictPopUp from './ConflictPopUp';
+import ListTasks from './ListTasks';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -33,6 +34,10 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {...state, show: action.payload};
     case 'showConflict':
       return {...state, showConflict: action.payload};
+    case 'overwriteConflict':
+      return {...state, overwriteConflict: action.payload};
+    case 'fixConflict':
+      return {...state, fixConflict: action.payload};
     default:
       return state;
   }
@@ -42,7 +47,9 @@ const reducer = (state = INITIAL_STATE, action) => {
 const INITIAL_STATE = {
   allEvents: tasks,
   show: false,
-  showConflict: false
+  showConflict: false,
+  overwriteConflict: false,
+  fixConflict: false
 };
 
 export const taskContext = createContext();
@@ -164,17 +171,7 @@ for(var i = 1; i<driverTasks.length;i++){
           <ul className="barButtons">
             <li>
                       {/* // Used to update the list of drivers. It will popup to change the driver info (email, name, contact ), create a new one or delete a driver */}
-                  <Dropdown as={ButtonGroup}>
-                <Button variant="success">Add Driver</Button>
-
-                <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
-
-                <Dropdown.Menu>
-                  <Dropdown.Item href="#/action-1">John Mask</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Andres Me</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">Grace Science</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+            <ListTasks/>
             </li>
             <li>
             <taskContext.Provider value={{state,dispatch}}>

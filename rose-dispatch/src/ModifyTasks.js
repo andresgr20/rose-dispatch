@@ -28,16 +28,11 @@ const useStyles = makeStyles((theme) => ({
 //   }
 export default function ModifyTasks() {
     const [show, setShow] = useState(false);
-    const [taskName,setName] = useState('Name of the task');
-    const [driver,setDriver] = useState('Joe');
     const [location,setLocation] = useState('Set Location');
-    const [taskType,setTaskType] = useState('pickup');
-    const [taskDate,setDate] = useState('pickup');
     const [startTime,setStartTime] = useState('Now');
     const [endTime,setEndTime] = useState('End');
     const [description,setDescription] = useState('');
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
 
     // useEffect(() => {
     //     document.Modal.Title = taskName;
