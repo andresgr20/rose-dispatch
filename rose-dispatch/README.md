@@ -4,6 +4,16 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### Libraries used
+
+In order to run the application, please make sure that you have the following:
+
+npm install @material-ui/lab
+npm install react-bootstrap
+npm install @material-ui/core
+npm install --save @fullcalendar/react @fullcalendar/daygrid @fullcalendar/timegrid
+
+
 ### `npm start`
 
 Runs the app in the development mode.<br />

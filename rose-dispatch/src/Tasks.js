@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, { useState, useEffect,useContext} from "react"; 
+import React, { useState,useContext} from "react"; 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -12,7 +12,6 @@ import Select from '@material-ui/core/Select';
 import {tasks} from './tasks-data.js'
 import MenuItem from '@material-ui/core/MenuItem';
 import {taskContext} from './App';
-import { letterSpacing } from '@material-ui/system';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -37,7 +36,7 @@ export default function Tasks() {
     const [showForm, setShowForm] = useState(false);
     const [taskName,setName] = useState('Name of the task');
     const [driver,setDriver] = useState('Jojo Rabbit');
-    const [location,setLocation] = useState('Set Location');
+    const [location,setLocation] = useState('Waterloo, ON');
     const [taskType,setTaskType] = useState('pickup');
     const [taskDate,setDate] = useState(new Date().getDate());
     const [startTime,setStartTime] = useState(3);
@@ -116,7 +115,7 @@ export default function Tasks() {
         return false;
         }
 
-        function removeTask(task){
+    function removeTask(task){
             var index = 0;
             for(var i = 0; i<tasks.length;i++){
                 if(task.id === tasks[i].id){

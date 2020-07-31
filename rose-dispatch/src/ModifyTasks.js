@@ -1,18 +1,14 @@
 import Modal from 'react-bootstrap/Modal';
 import React, { useState, useEffect, useContext } from "react";
-import Dropdown from 'react-bootstrap/Dropdown';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Tasks.css';
 import {tasks} from './tasks-data.js'
 import {editContext} from './App'
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     container: {
