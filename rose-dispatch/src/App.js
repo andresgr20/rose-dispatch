@@ -1,11 +1,7 @@
 import React, { useState, useEffect,createContext,useReducer } from 'react';
 import logo from './logo-grey.png';
-import ButtonGroup from 'react-bootstrap/ButtonGroup'
-import Dropdown from 'react-bootstrap/Dropdown'
-import Button from 'react-bootstrap/Button'
 import './App.css';
 import Tasks from './Tasks.js';
-import driversData from './drivers-data.json';
 import {Calendar} from './Calendar.js'
 import { tasks } from './tasks-data';
 import Select from '@material-ui/core/Select';
@@ -14,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PopUpSnack from './PopUpSnack';
 import ConflictPopUp from './ConflictPopUp';
 import ListTasks from './ListTasks';
+import ModifyTasks from './ModifyTasks';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -24,6 +21,33 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
+
+export const editContext = createContext();
+
+const reducerEdit = (stateEdit = INITIAL_EDITSTATE, action) => {
+    switch (action.type) {
+      case "modifyTask":
+        return { ...stateEdit, modifyTask: action.payload };
+      default:
+        return stateEdit;
+    }
+  };
+  
+  // Set up Initial State
+  const INITIAL_EDITSTATE = {
+    modifyTask: {show:false,
+      task:{id: 0, 
+        info:{
+          "name":"Dummy",
+          "driver":"React",
+          "location":"Hooks",
+          "type":'dropoff',
+          "date":'2020-07-24',
+          "startTime":11,
+          "endTime":22,
+          "description":"Bye"
+        }}}
+  };
 
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -53,9 +77,9 @@ const INITIAL_STATE = {
 };
 
 export const taskContext = createContext();
-export const driverContext = createContext();
 
 function App() {
+  const [stateEdit,dispatchEdit] = useReducer(reducerEdit,INITIAL_EDITSTATE)
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const classes = useStyles();
   const [period,setPeriod] = useState(2);
@@ -63,8 +87,7 @@ function App() {
 
   function handleDriverChange(e){
     setDriver(e.target.value);
-
-}
+  }
 
 function addDays(date) {
   var result = new Date(date);
@@ -170,8 +193,10 @@ for(var i = 1; i<driverTasks.length;i++){
           <img src={logo} className="logo" alt="logo" />
           <ul className="barButtons">
             <li>
-                      {/* // Used to update the list of drivers. It will popup to change the driver info (email, name, contact ), create a new one or delete a driver */}
-            <ListTasks/>
+            <editContext.Provider value={{stateEdit,dispatchEdit}}>
+              <ListTasks/>
+              <ModifyTasks/>
+            </editContext.Provider> 
             </li>
             <li>
             <taskContext.Provider value={{state,dispatch}}>
@@ -179,11 +204,6 @@ for(var i = 1; i<driverTasks.length;i++){
             <PopUpSnack/>
             <ConflictPopUp/>
            </taskContext.Provider>
-
-          {/* // Create a new task for  a user, if there is a conflict with a task it will recommned another driver or another time for the same driver 
-          // A task should have Driver, Type, time duration, Description, Location,nationality
-          // after adding sends and invite to the person in the email
-          // pick up, drop off, other are drop down (if selects pick up or drop off input address) other is blank */}
         </li>
           </ul>
           </nav>

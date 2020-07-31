@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -10,6 +10,9 @@ import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Tasks.css';
 import {tasks} from './tasks-data.js'
+import {editContext} from './App'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -23,217 +26,119 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-//   function Alert(props) {
-//     return <MuiAlert elevation={6} variant="filled" {...props} />;
-//   }
+  
 export default function ModifyTasks() {
-    const [show, setShow] = useState(false);
-    const [location,setLocation] = useState('Set Location');
-    const [startTime,setStartTime] = useState('Now');
-    const [endTime,setEndTime] = useState('End');
-    const [description,setDescription] = useState('');
     const classes = useStyles();
+    const {stateEdit, dispatchEdit} = useContext(editContext);
+  const [open, setOpen] = useState(false);
+  const [startTime,setStartTime] = useState(stateEdit.modifyTask.task.info.startTime);
+  const [endTime,setEndTime] = useState(stateEdit.modifyTask.task.info.endTime);
+  const [description,setDescription] = useState(stateEdit.modifyTask.task.info.description);
+  const [location,setLocation] = useState(stateEdit.modifyTask.task.info.location);
 
-    // useEffect(() => {
-    //     document.Modal.Title = taskName;
-    // });
+  const handleClose = (event) => {
+    setOpen(false);
+    dispatchEdit({ type: 'modifyTask', payload: {show:false,task:{}}});
+  };
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const handleCloseSnack = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
-        }
-    
-        setOpen(false);
-      };
-    const submit = e =>{
-        //true would be replanced by checking the conflict scheudle
-        e.preventDefault();
-        if(true){
-            dict.push(
-                {"id":2,
-            "info":{
-                "name":taskName,
-                "driver":driver,
-                "location":location,
-                "type":taskType,
-                "date":taskDate,
-                "startTime":startTime,
-                "endTime":endTime,
-                "description":description
+  function handleDescriptionChange(e){
+    setDescription(e.target.value);
+}
+function handleLocationChange(e){
+    setLocation(e.target.value);
+}
 
-            }}
-            )
-            // dict.push(
-            //     [{
-            //         "id":2,
-            //         "info":{
-            //             "name":taskName,
-            //             "driver":driver,
-            //             "location":location,
-            //             "type":taskType,
-            //             "date":taskDate,
-            //             "startTime":startTime,
-            //             "endTime":endTime,
-            //             "description":description
-            //     }
-            // )
-            console.log(dict);
-            setShow(false);
-        }else{
-            //trigger other popup
-        }
-    }
+function handleStartTimeChange(e){
+    setStartTime(e.target.value);
+}
 
-    function handleNameChange(e){
-        setName(e.target.value);
-    }
+function handleEndTimeChange(e){
+    setEndTime(e.target.value);
+}
 
-    function handleDescriptionChange(e){
-        setDescription(e.target.value);
-    }
+const submit = e =>{
+    console.log('submitted');
+}
 
-    function handleDriverChange(e){
-        setDriver(e.target.value);
-    }
-
-    function handleLocationChange(e){
-        setLocation(e.target.value);
-    }
-
-    function handleStartTimeChange(e){
-        setStartTime(e.target.value);
-    }
-
-    function handleTaskType(e){
-        setTaskType(e.target.value);
-    }
-    function handleEndTimeChange(e){
-        setEndTime(e.target.value);
-    }
-
-    function handleDateChange(e){
-        setDate(e.target.value);
-    }
-
-    return (
-      <>
-      <Button variant="primary" onClick={handleShow}>
-        Add Tasks
-      </Button>
-        <Modal
-          show={show}
+  console.log(stateEdit.modifyTask.task);
+  return (
+    <Modal
+          show={stateEdit.modifyTask.show}
           animation={true}
-          onHide={() => setShow(false)}
-          dialogClassName="modal-90w"
-          aria-labelledby="example-custom-modal-styling-title"
+          onHide={() => setOpen(stateEdit.modifyTask.show)}
         >
           <Modal.Header closeButton>
-            <Modal.Title id="example-custom-modal-styling-title">
+            <Modal.Title>
+            Adding a task
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-              <form onSubmit={submit}>
-                  <h3 className="title">Adding a task</h3>
+          <Modal.Body >
                   <label>
-                      Name:
-                      <input 
-                      type="text" 
-                      name="taskName" 
-                      value={taskName} 
-                      onChange={handleNameChange} required>
-                      </input>
+                      {/* Name: {stateEdit.modifyTask.info.name} */}
                   </label>
                   <label>
-                      Driver:
-                    <Dropdown>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic" 
-                        value={driver} onChange={handleDriverChange}>
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                  </label>
-                  <label>
-                      Description:
-                      <input type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></input>
-                  </label>
+                      {/* Driver: {stateEdit.modifyTask.info.driver} */}
+                      </label>
                   <label>
                       Type
-                    <RadioGroup aria-label="task" name="task" value={taskType} onChange={handleTaskType}>
-                        <FormControlLabel value="pickup" control={<Radio />} label="Pick Up" />
-                        <FormControlLabel value="dropoff" control={<Radio />} label="Drop Off" />
-                        <FormControlLabel value="other" control={<Radio />} label="Other" />
+                    </label>
+                    <RadioGroup aria-label="task" name="task" value={"pickup"}row>
+                        <FormControlLabel value={"pickup"} disabled control={<Radio />} label="Pick Up" />
+                        <FormControlLabel value={"dropoff"} disabled control={<Radio />} label="Drop Off" />
+                        <FormControlLabel value={"other"} disabled  control={<Radio />} label="Other" />
                     </RadioGroup>
-                  </label>
                   <label>
                       Location:
+                      </label>
                       <input type="text" name="locationName" value={location} onChange={handleLocationChange}></input>
-                  </label>
-                  <label>
-                      Date
-                    <TextField
-                        id="date"
-                        value={taskDate}
-                        label="taskDate"
-                        type="date"
-                        defaultValue="2017-05-24"
-                        className={classes.textField}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                        onChange={handleDateChange}
-                        required
-                    />
-                  </label>
+
+                  {/* <label> Date: {stateEdit.modifyTask.task.info.taskDate}</label> */}
+
                   <label>
                      Start Time
+                     </label>
                      <TextField
-                        id="time"
                         value={startTime}
-                        label="Start Date"
+                        label="Start Time"
                         type="integer"
-                        defaultValue="2"
+                        defaultValue={startTime}
                         className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
-                        }}
-                        inputProps={{
-                        step: 300, // 5 min
                         }}
                         onChange={handleStartTimeChange}
                         required
                     />
-                  </label>
+
                   <label>
                      End Time
+                     </label>
                      <TextField
-                        id="time"
                         value={endTime}
-                        label="Start Date"
-                        type="time"
-                        defaultValue="07:30"
+                        label="End Time"
+                        type="integer"
+                        defaultValue={endTime}
                         className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
                         }}
-                        inputProps={{
-                        step: 300, // 5 min
-                        }}
                         onChange={handleEndTimeChange}
                         required
                     />
-                  </label>
-                  <button onClick={handleClose}>Cancel</button>
-                  <button onClick={submit}>Apply</button>
-              </form>
+
+                  <label>
+                      Description:
+                      </label>
+                      <textarea type="text" name="locationName" value={description} onChange={handleDescriptionChange} required></textarea>
+                  <button  onClick={handleClose}>Cancel</button>
+                  <button>Delete</button>
+                  <button  onClick={submit} className="formButton" >Apply</button>
           </Modal.Body>
+          <Modal.Footer>
+              </Modal.Footer>
         </Modal>
-      </>
-    );
+  );
   }
+
+
+  

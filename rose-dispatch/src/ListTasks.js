@@ -1,15 +1,16 @@
-import React, {useState} from "react"; 
+import React, {useState,useCallback,useContext} from "react"; 
 import Modal from 'react-bootstrap/Modal';
 import {taskContext} from './App';
 import ListGroup from 'react-bootstrap/ListGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import {tasks} from './tasks-data';
+import {editContext} from './App';
 // import ModifyTasks from "./ModifyTasks";
 
 export default function ListTasks() {
+    const {stateEdit, dispatchEdit} = useContext(editContext);
     const [show, setShow] = useState(false);
-    const itemClickHandler 
     const [driverSelect,setDriverSelect] = useState('');
     const allTasks = [];
     const handleDriverSelect=(e)=>{
@@ -29,9 +30,17 @@ export default function ListTasks() {
             }
         })
     }
-    function hi(t){
-        console.log(t);
-    }
+
+  const itemClickHandler = useCallback((e) => {
+      console.log(e);
+      const item = {show:true,task:e};
+    dispatchEdit({
+        type: 'modifyTask',
+        payload: item
+    });
+    console.log('dispatch');
+  }, [])
+
     getList();
     return (
       <>
@@ -48,8 +57,8 @@ export default function ListTasks() {
           </Modal.Header>
           <Modal.Body>
               <ListGroup>
-        {allTasks.map((task)=>{
-            return <ListGroup.Item action onClick={itemClickHandler} variant={task.info.type==='dropoff' ? "light": task.info.type==='pickup'? "info":'dark'}>{task.info.date}: {task.info.startTime} to {task.info.endTime}, {task.info.type}  </ListGroup.Item>;
+        {allTasks.map((task,key)=>{
+            return <ListGroup.Item action onClick={() => itemClickHandler(task)} variant={task.info.type==='dropoff' ? "light": task.info.type==='pickup'? "info":'dark'}>{task.info.date}: {task.info.startTime} to {task.info.endTime}, {task.info.type}  </ListGroup.Item>;
         })}
 </ListGroup></Modal.Body>
         </Modal>
